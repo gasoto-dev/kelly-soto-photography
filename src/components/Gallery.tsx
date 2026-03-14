@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Masonry from "react-masonry-css"
 import Lightbox from "yet-another-react-lightbox"
 import "yet-another-react-lightbox/styles.css"
 
@@ -16,18 +15,18 @@ export interface GalleryImage {
 }
 
 export const GALLERY_IMAGES: GalleryImage[] = [
-  { seed: "ks-g1", w: 600, h: 800, alt: "Portrait session", category: "portraits" },
-  { seed: "ks-g2", w: 600, h: 600, alt: "Family moment", category: "families" },
-  { seed: "ks-g3", w: 600, h: 900, alt: "Outdoor portrait", category: "portraits" },
-  { seed: "ks-g4", w: 600, h: 700, alt: "Natural light portrait", category: "portraits" },
-  { seed: "ks-g5", w: 600, h: 600, alt: "Event photography", category: "events" },
-  { seed: "ks-g6", w: 600, h: 800, alt: "Lifestyle session", category: "portraits" },
-  { seed: "ks-g7", w: 600, h: 650, alt: "Family portrait", category: "families" },
-  { seed: "ks-g8", w: 600, h: 900, alt: "Golden hour portrait", category: "portraits" },
-  { seed: "ks-g9", w: 600, h: 700, alt: "Candid moment", category: "events" },
-  { seed: "ks-g10", w: 600, h: 600, alt: "Studio portrait", category: "portraits" },
-  { seed: "ks-g11", w: 600, h: 800, alt: "Outdoor family", category: "families" },
-  { seed: "ks-g12", w: 600, h: 750, alt: "Portrait close-up", category: "portraits" },
+  { seed: "ks-g1", w: 800, h: 600, alt: "Portrait session", category: "portraits" },
+  { seed: "ks-g2", w: 800, h: 600, alt: "Family moment", category: "families" },
+  { seed: "ks-g3", w: 800, h: 600, alt: "Outdoor portrait", category: "portraits" },
+  { seed: "ks-g4", w: 800, h: 600, alt: "Natural light portrait", category: "portraits" },
+  { seed: "ks-g5", w: 800, h: 600, alt: "Event photography", category: "events" },
+  { seed: "ks-g6", w: 800, h: 600, alt: "Lifestyle session", category: "portraits" },
+  { seed: "ks-g7", w: 800, h: 600, alt: "Family portrait", category: "families" },
+  { seed: "ks-g8", w: 800, h: 600, alt: "Golden hour portrait", category: "portraits" },
+  { seed: "ks-g9", w: 800, h: 600, alt: "Candid moment", category: "events" },
+  { seed: "ks-g10", w: 800, h: 600, alt: "Studio portrait", category: "portraits" },
+  { seed: "ks-g11", w: 800, h: 600, alt: "Outdoor family", category: "families" },
+  { seed: "ks-g12", w: 800, h: 600, alt: "Portrait close-up", category: "portraits" },
 ]
 
 const CATEGORIES: { value: GalleryCategory; label: string }[] = [
@@ -36,12 +35,6 @@ const CATEGORIES: { value: GalleryCategory; label: string }[] = [
   { value: "families", label: "Families" },
   { value: "events", label: "Events" },
 ]
-
-const MASONRY_BREAKPOINTS = {
-  default: 3,
-  1024: 2,
-  640: 1,
-}
 
 export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all")
@@ -90,29 +83,26 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* Masonry grid */}
-        <Masonry
-          breakpointCols={MASONRY_BREAKPOINTS}
-          className="flex gap-4"
-          columnClassName="flex flex-col gap-4"
-        >
+        {/* Uniform-aspect-ratio grid — clean bottom edge */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((img, idx) => (
             <button
               key={img.seed}
               onClick={() => setLightboxIndex(idx)}
               className="group relative overflow-hidden rounded-sm w-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-300"
+              style={{ aspectRatio: "4/3" }}
               aria-label={`Open ${img.alt} in lightbox`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://picsum.photos/seed/${img.seed}/${img.w}/${img.h}`}
                 alt={img.alt}
-                className="w-full h-auto block transition-transform duration-500 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300" />
             </button>
           ))}
-        </Masonry>
+        </div>
 
         {/* Lightbox */}
         <Lightbox
