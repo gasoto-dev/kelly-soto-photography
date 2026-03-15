@@ -32,6 +32,12 @@ describe("Nav", () => {
     const link = screen.getByText("Gallery").closest("a") as HTMLAnchorElement
     expect(link.href).toContain("/gallery")
   })
+  it("logo is a link to /", () => {
+    render(<Nav />)
+    const logo = screen.getByText("Kelly Soto").closest("a") as HTMLAnchorElement
+    expect(logo).not.toBeNull()
+    expect(logo.href).toContain("/")
+  })
 })
 
 describe("Hero", () => {
@@ -213,6 +219,16 @@ describe("Contact", () => {
   it("has a submit button", () => {
     render(<Contact />)
     expect(screen.getByRole("button", { name: /Send Message/i })).toBeInTheDocument()
+  })
+  it("submit button is enabled by default", () => {
+    render(<Contact />)
+    expect(screen.getByRole("button", { name: /Send Message/i })).not.toBeDisabled()
+  })
+  it("name input is controlled", () => {
+    render(<Contact />)
+    const input = screen.getByPlaceholderText("Your name") as HTMLInputElement
+    fireEvent.change(input, { target: { value: "Kelly" } })
+    expect(input.value).toBe("Kelly")
   })
 })
 
