@@ -2,12 +2,13 @@ export default function Nav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-stone-100">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <span
-          className="text-xl tracking-widest text-stone-700"
+        <a
+          href="/"
+          className="text-xl tracking-widest text-stone-700 hover:text-stone-900 transition-colors"
           style={{ fontFamily: "var(--font-playfair)" }}
         >
           Kelly Soto
-        </span>
+        </a>
         <ul className="hidden md:flex items-center gap-8 text-sm text-stone-500 tracking-wide">
           {[
             { label: "Gallery",  href: "/gallery"   },
