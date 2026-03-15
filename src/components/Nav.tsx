@@ -9,13 +9,15 @@ export default function Nav() {
           Kelly Soto
         </span>
         <ul className="hidden md:flex items-center gap-8 text-sm text-stone-500 tracking-wide">
-          {["Gallery", "About", "Services", "Contact"].map((item) => (
-            <li key={item}>
-              <a
-                href={`#${item.toLowerCase()}`}
-                className="hover:text-stone-800 transition-colors"
-              >
-                {item}
+          {[
+            { label: "Gallery",  href: "/gallery"   },
+            { label: "About",    href: "#about"     },
+            { label: "Services", href: "#services"  },
+            { label: "Contact",  href: "#contact"   },
+          ].map((item) => (
+            <li key={item.label}>
+              <a href={item.href} className="hover:text-stone-800 transition-colors">
+                {item.label}
               </a>
             </li>
           ))}
