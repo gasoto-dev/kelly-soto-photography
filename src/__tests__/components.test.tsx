@@ -2,10 +2,12 @@ import { render, screen, fireEvent } from "@testing-library/react"
 import Nav from "@/components/Nav"
 import Hero from "@/components/Hero"
 import Gallery from "@/components/Gallery"
+import GalleryGrid from "@/components/GalleryGrid"
 import About from "@/components/About"
 import Services from "@/components/Services"
 import Contact from "@/components/Contact"
 import Footer from "@/components/Footer"
+import GalleryPage from "@/app/gallery/page"
 
 describe("Nav", () => {
   it("renders without crashing", () => {
@@ -24,6 +26,11 @@ describe("Nav", () => {
     expect(screen.getByText("Gallery")).toBeInTheDocument()
     expect(screen.getByText("About")).toBeInTheDocument()
     expect(screen.getByText("Contact")).toBeInTheDocument()
+  })
+  it("Gallery nav link points to /gallery", () => {
+    render(<Nav />)
+    const link = screen.getByText("Gallery").closest("a") as HTMLAnchorElement
+    expect(link.href).toContain("/gallery")
   })
 })
 
@@ -45,7 +52,7 @@ describe("Hero", () => {
   })
 })
 
-describe("Gallery", () => {
+describe("Gallery (homepage 3x3 preview)", () => {
   it("renders without crashing", () => {
     render(<Gallery />)
   })
@@ -53,10 +60,10 @@ describe("Gallery", () => {
     render(<Gallery />)
     expect(screen.getByText("The Work")).toBeInTheDocument()
   })
-  it("renders 12 images by default (All tab)", () => {
+  it("renders 9 images by default (3x3 preview, All tab)", () => {
     render(<Gallery />)
     const images = screen.getAllByRole("img")
-    expect(images.length).toBe(12)
+    expect(images.length).toBe(9)
   })
   it("uses picsum.photos for placeholder images", () => {
     render(<Gallery />)
@@ -78,7 +85,6 @@ describe("Gallery", () => {
     render(<Gallery />)
     fireEvent.click(screen.getByRole("tab", { name: /Portraits/i }))
     expect(screen.getByRole("tab", { name: /Portraits/i })).toHaveAttribute("aria-selected", "true")
-    // Portraits: 7 images in our data
     const images = screen.getAllByRole("img")
     expect(images.length).toBe(7)
   })
@@ -97,7 +103,62 @@ describe("Gallery", () => {
   it("renders lightbox trigger buttons with aria-labels", () => {
     render(<Gallery />)
     const buttons = screen.getAllByRole("button", { name: /Open .* in lightbox/i })
+    expect(buttons.length).toBe(9)
+  })
+  it("has a View Full Gallery link to /gallery", () => {
+    render(<Gallery />)
+    const link = screen.getByText(/View Full Gallery/i).closest("a") as HTMLAnchorElement
+    expect(link.href).toContain("/gallery")
+  })
+})
+
+describe("GalleryGrid (full collection)", () => {
+  it("renders all 12 images when no limit is set", () => {
+    render(<GalleryGrid />)
+    const images = screen.getAllByRole("img")
+    expect(images.length).toBe(12)
+  })
+  it("respects limit prop", () => {
+    render(<GalleryGrid limit={6} />)
+    const images = screen.getAllByRole("img")
+    expect(images.length).toBe(6)
+  })
+  it("shows title when showTitle is true", () => {
+    render(<GalleryGrid showTitle />)
+    expect(screen.getByText("The Work")).toBeInTheDocument()
+  })
+  it("renders 12 lightbox trigger buttons for full collection", () => {
+    render(<GalleryGrid />)
+    const buttons = screen.getAllByRole("button", { name: /Open .* in lightbox/i })
     expect(buttons.length).toBe(12)
+  })
+})
+
+describe("/gallery page (smoke)", () => {
+  it("renders without crashing", () => {
+    render(<GalleryPage />)
+  })
+  it("shows the gallery heading", () => {
+    render(<GalleryPage />)
+    expect(screen.getByText("The Work")).toBeInTheDocument()
+  })
+  it("shows all 12 images", () => {
+    render(<GalleryPage />)
+    const images = screen.getAllByRole("img")
+    // Nav logo + 12 gallery images (hero image not on this page)
+    const galleryImages = (images as HTMLImageElement[]).filter((img) =>
+      img.src.includes("picsum.photos")
+    )
+    expect(galleryImages.length).toBe(12)
+  })
+  it("has a back link to homepage", () => {
+    render(<GalleryPage />)
+    expect(screen.getByText(/← Back/i)).toBeInTheDocument()
+  })
+  it("shows category tabs", () => {
+    render(<GalleryPage />)
+    expect(screen.getByRole("tab", { name: /All/i })).toBeInTheDocument()
+    expect(screen.getByRole("tab", { name: /Portraits/i })).toBeInTheDocument()
   })
 })
 
